@@ -7,6 +7,10 @@ from .forms import CommentForm
 
 # Create your views here.
 class PostList(generic.ListView):
+    """
+    Uses django's generic.Listview to filter approved posts
+    and to paginate posts by 6 per page.
+    """
     queryset = Post.objects.filter(status=1)
     template_name = "blog/index.html"
     paginate_by = 6
@@ -20,6 +24,12 @@ def post_detail(request, slug):
 
     ``post``
         An instance of :model:`blog.Post`.
+    ``comments``
+        All approved comments related to a post.
+    ``comment_count``
+        The number of approved comments related to a post.
+    ``comment_form``
+        An instance of :form:`blog.CommentForm`.
 
     **Template:**
 
@@ -59,7 +69,16 @@ def post_detail(request, slug):
 
 def comment_edit(request, slug, comment_id):
     """
-    view to edit comments
+    Allows an authorized user to edit thier :model:`blog.comment`
+
+    **Content**
+
+    ``post``
+        An instance of :model:`blog.Post`.
+    ``comment``
+        A single comment related to a post.
+    ``comment_form``
+        An instance of :form:`blog.CommentForm`.
     """
     if request.method == "POST":
 
@@ -82,7 +101,14 @@ def comment_edit(request, slug, comment_id):
 
 def comment_delete(request, slug, comment_id):
     """
-    view to delete comment
+    Delete an individual comment
+
+    **Content**
+
+    ``post``
+        An instance of :model:`blog.Post`.
+    ``comment``
+        A single comment related to a post.
     """
     queryset = Post.objects.filter(status=1)
     post = get_object_or_404(queryset, slug=slug)
